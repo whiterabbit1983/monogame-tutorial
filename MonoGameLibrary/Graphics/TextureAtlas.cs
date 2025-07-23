@@ -45,6 +45,12 @@ public class TextureAtlas
         _regions.Clear();
     }
 
+    public Sprite CreateSprite(string regionName)
+    {
+        var region = GetRegion(regionName);
+        return new(region);
+    }
+
     public static TextureAtlas FromFile(ContentManager content, string fileName)
     {
         TextureAtlas atlas = new();
