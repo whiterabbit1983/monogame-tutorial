@@ -14,6 +14,8 @@ public class Game1 : Core
     private AnimatedSprite _bat;
     private Vector2 _slimePosition;
     private const float MOVEMENT_SPEED = 5.0f;
+    private Vector2 _batPosition;
+    private Vector2 _batVelocity;
 
     public Game1() : base("Dungeon Slime", 1280, 720, false)
     {
@@ -25,6 +27,8 @@ public class Game1 : Core
         // TODO: Add your initialization logic here
 
         base.Initialize();
+        _batPosition = new(_slime.Width + 10, 0);
+        AssignRandomBatVelocity();
     }
 
     protected override void LoadContent()
@@ -50,7 +54,98 @@ public class Game1 : Core
         CheckKeyboardInput();
         CheckGamePadInput();
 
+        Rectangle screenBounds = new(
+            0,
+            0,
+            GraphicsDevice.PresentationParameters.BackBufferWidth,
+            GraphicsDevice.PresentationParameters.BackBufferHeight
+        );
+
+        Circle slimeBounds = new(
+            (int)(_slimePosition.X + (_slime.Width * 0.5f)),
+            (int)(_slimePosition.Y + (_slime.Height * 0.5f)),
+            (int)(_slime.Width * 0.5f)
+        );
+
+        if (slimeBounds.Left < screenBounds.Left)
+        {
+            _slimePosition.X = screenBounds.Left;
+        }
+        else if (slimeBounds.Right > screenBounds.Right)
+        {
+            _slimePosition.X = screenBounds.Right - _slime.Width;
+        }
+
+        if (slimeBounds.Top < screenBounds.Top)
+        {
+            _slimePosition.Y = screenBounds.Top;
+        }
+        else if (slimeBounds.Bottom > screenBounds.Bottom)
+        {
+            _slimePosition.Y = screenBounds.Bottom - _slime.Height;
+        }
+
+        Vector2 newBatPosition = _batPosition + _batVelocity;
+        Circle batBounds = new(
+            (int)(newBatPosition.X + (_bat.Width * 0.5f)),
+            (int)(newBatPosition.Y + (_bat.Height * 0.5f)),
+            (int)(_bat.Width * 0.5f)
+        );
+
+        Vector2 normal = Vector2.Zero;
+
+        if (batBounds.Left < screenBounds.Left)
+        {
+            normal.X = Vector2.UnitX.X;
+            newBatPosition.X = screenBounds.Left;
+        }
+        else if (batBounds.Right > screenBounds.Right)
+        {
+            normal.X = -Vector2.UnitX.X;
+            newBatPosition.X = screenBounds.Right - _bat.Width;
+        }
+
+        if (batBounds.Top < screenBounds.Top)
+        {
+            normal.Y = Vector2.UnitY.Y;
+            newBatPosition.Y = screenBounds.Top;
+        }
+        else if (batBounds.Bottom > screenBounds.Bottom)
+        {
+            normal.Y = -Vector2.UnitY.Y;
+            newBatPosition.Y = screenBounds.Bottom - _bat.Height;
+        }
+
+        if (normal != Vector2.Zero)
+        {
+            _batVelocity = Vector2.Reflect(_batVelocity, normal);
+        }
+
+        _batPosition = newBatPosition;
+
+        if (slimeBounds.Intersects(batBounds))
+        {
+            int totalColumns = GraphicsDevice.PresentationParameters.BackBufferWidth / (int)_bat.Width;
+            int totalRows = GraphicsDevice.PresentationParameters.BackBufferHeight / (int)_bat.Height;
+            int column = Random.Shared.Next(0, totalColumns);
+            int row = Random.Shared.Next(0, totalRows);
+            _batPosition = new Vector2(column * _bat.Width, row * _bat.Height);
+
+            AssignRandomBatVelocity();
+        }
+
         base.Update(gameTime);
+    }
+
+    private void AssignRandomBatVelocity()
+    {
+        float angle = (float)(Random.Shared.NextDouble() * Math.PI * 2);
+
+        float x = (float)Math.Cos(angle);
+        float y = (float)Math.Sin(angle);
+        Vector2 direction = new Vector2(x, y);
+
+        _batVelocity = direction * MOVEMENT_SPEED;
     }
 
     private void CheckKeyboardInput()
@@ -133,7 +228,7 @@ public class Game1 : Core
         SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
         _slime.Draw(SpriteBatch, _slimePosition);
-        _bat.Draw(SpriteBatch, new(_slime.Width + 10, 0));
+        _bat.Draw(SpriteBatch, _batPosition);
 
         SpriteBatch.End();
 
