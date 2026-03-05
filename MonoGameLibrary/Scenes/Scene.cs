@@ -11,8 +11,10 @@ public abstract class Scene : IDisposable
 
     public Scene()
     {
-        Content = new ContentManager(Core.Content.ServiceProvider);
-        Content.RootDirectory = Core.Content.RootDirectory;
+        Content = new ContentManager(Core.Content.ServiceProvider)
+        {
+            RootDirectory = Core.Content.RootDirectory
+        };
     }
 
     ~Scene() => Dispose(false);
