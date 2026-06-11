@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary;
 using MonoGameLibrary.Scenes;
 
@@ -11,13 +12,28 @@ public class TitleScene : Scene
     private const string SLIME_TEXT = "Slime";
     private const string PRESS_ENTER_TEXT = "Press Enter To Start";
 
+    // The font to use to render normal text.
     private SpriteFont _font;
+
+    // The font used to render the title text.
     private SpriteFont _font5x;
+
+    // The position to draw the dungeon text at.
     private Vector2 _dungeonTextPos;
+
+    // The origin to set for the dungeon text.
     private Vector2 _dungeonTextOrigin;
+
+    // The position to draw the slime text at.
     private Vector2 _slimeTextPos;
+
+    // The origin to set for the slime text.
     private Vector2 _slimeTextOrigin;
+
+    // The position to draw the press enter text at.
     private Vector2 _pressEnterPos;
+
+    // The origin to set for the press enter text when drawing it.
     private Vector2 _pressEnterOrigin;
 
     public override void Initialize()
@@ -27,11 +43,11 @@ public class TitleScene : Scene
         Core.ExitOnEscape = true;
 
         Vector2 size = _font5x.MeasureString(DUNGEON_TEXT);
-        _dungeonTextPos = new(640, 100);
+        _dungeonTextPos = new Vector2(640, 100);
         _dungeonTextOrigin = size * 0.5f;
 
         size = _font5x.MeasureString(SLIME_TEXT);
-        _slimeTextPos = new(757, 207);
+        _slimeTextPos = new Vector2(757, 207);
         _slimeTextOrigin = size * 0.5f;
 
         size = _font.MeasureString(PRESS_ENTER_TEXT);
@@ -41,17 +57,14 @@ public class TitleScene : Scene
 
     public override void LoadContent()
     {
-        base.LoadContent();
-
         _font = Core.Content.Load<SpriteFont>("fonts/04B_30");
-        _font5x = Core.Content.Load<SpriteFont>("fonts/04B_30_5x");
+        _font5x = Content.Load<SpriteFont>("fonts/04B_30_5x");
     }
 
     public override void Update(GameTime gameTime)
     {
-        base.Update(gameTime);
-
-        if (Core.Input.Keyboard.WasKeyJustPressed(Microsoft.Xna.Framework.Input.Keys.Enter))
+        // If the user presses enter, switch to the game scene.
+        if (Core.Input.Keyboard.WasKeyJustPressed(Keys.Enter))
         {
             Core.ChangeScene(new GameScene());
         }
@@ -59,11 +72,9 @@ public class TitleScene : Scene
 
     public override void Draw(GameTime gameTime)
     {
-        base.Draw(gameTime);
-
-        Core.GraphicsDevice.Clear(new(32, 40, 78, 255));
+        Core.GraphicsDevice.Clear(new Color(32, 40, 78, 255));
         Core.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        var dropShadowColor = Color.Black * 0.5f;
+        Color dropShadowColor = Color.Black * 0.5f;
         Core.SpriteBatch.DrawString(_font5x, DUNGEON_TEXT, _dungeonTextPos + new Vector2(10, 10), dropShadowColor, 0.0f, _dungeonTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
         Core.SpriteBatch.DrawString(_font5x, DUNGEON_TEXT, _dungeonTextPos, Color.White, 0.0f, _dungeonTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
         Core.SpriteBatch.DrawString(_font5x, SLIME_TEXT, _slimeTextPos + new Vector2(10, 10), dropShadowColor, 0.0f, _slimeTextOrigin, 1.0f, SpriteEffects.None, 1.0f);

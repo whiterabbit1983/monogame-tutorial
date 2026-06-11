@@ -18,8 +18,8 @@ public class Core : Game
     public static new ContentManager Content { get; private set; }
     public static InputManager Input { get; private set; }
     public static bool ExitOnEscape { get; set; }
-    private static Scene activeScene;
-    private static Scene nextScene;
+    private static Scene _activeScene;
+    private static Scene _nextScene;
 
     public Core(string title, int width, int height, bool fullScreen)
     {
@@ -65,38 +65,38 @@ public class Core : Game
             Exit();
         }
 
-        if (nextScene != null)
+        if (_nextScene != null)
         {
             TransitionScene();
         }
 
-        activeScene?.Update(gameTime);
+        _activeScene?.Update(gameTime);
 
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
-        activeScene?.Draw(gameTime);
+        _activeScene?.Draw(gameTime);
 
         base.Draw(gameTime);
     }
 
     public static void ChangeScene(Scene next)
     {
-        if (activeScene != next)
+        if (_activeScene != next)
         {
-            nextScene = next;
+            _nextScene = next;
         }        
     }
 
     private static void TransitionScene()
     {
-        activeScene?.Dispose();
+        _activeScene?.Dispose();
 
         GC.Collect();
-        activeScene = nextScene;
-        nextScene = null;
-        activeScene?.Initialize();
+        _activeScene = _nextScene;
+        _nextScene = null;
+        _activeScene?.Initialize();
     }
 }

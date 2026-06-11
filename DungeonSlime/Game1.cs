@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary;
 using MonoGameLibrary.Graphics;
 using MonoGameLibrary.Input;
+using DungeonSlime.Scenes;
 
 namespace DungeonSlime;
 
@@ -31,28 +32,29 @@ public class Game1 : Core
     protected override void Initialize()
     {
         base.Initialize();
-        Rectangle screenBounds = GraphicsDevice.PresentationParameters.Bounds;
+        // Rectangle screenBounds = GraphicsDevice.PresentationParameters.Bounds;
 
-        _roomBounds = new(
-            (int)_tilemap.TileWidth,
-            (int)_tilemap.TileHeight,
-            screenBounds.Width - (int)_tilemap.TileWidth * 2,
-            screenBounds.Height - (int)_tilemap.TileHeight * 2
-        );
+        // _roomBounds = new(
+        //     (int)_tilemap.TileWidth,
+        //     (int)_tilemap.TileHeight,
+        //     screenBounds.Width - (int)_tilemap.TileWidth * 2,
+        //     screenBounds.Height - (int)_tilemap.TileHeight * 2
+        // );
 
-        int centerRow = _tilemap.Rows / 2;
-        int centerColumn = _tilemap.Columns / 2;
-        _slimePosition = new Vector2(centerColumn * _tilemap.TileWidth, centerRow * _tilemap.TileHeight);
+        // int centerRow = _tilemap.Rows / 2;
+        // int centerColumn = _tilemap.Columns / 2;
+        // _slimePosition = new Vector2(centerColumn * _tilemap.TileWidth, centerRow * _tilemap.TileHeight);
 
-        // Initial bat position will be in the top left corner of the room
-        _batPosition = new Vector2(_roomBounds.Left, _roomBounds.Top);
-        AssignRandomBatVelocity();
+        // // Initial bat position will be in the top left corner of the room
+        // _batPosition = new Vector2(_roomBounds.Left, _roomBounds.Top);
+        // AssignRandomBatVelocity();
 
-        //TODO: add music here
+        // //TODO: add music here
 
-        _scoreTextPosition = new(_roomBounds.Left, _tilemap.TileHeight * 0.5f);
-        float scoreTextYOrigin = _font.MeasureString("Score").Y * 0.5f;
-        _scoreTextOrigin = new(0, scoreTextYOrigin);
+        // _scoreTextPosition = new(_roomBounds.Left, _tilemap.TileHeight * 0.5f);
+        // float scoreTextYOrigin = _font.MeasureString("Score").Y * 0.5f;
+        // _scoreTextOrigin = new(0, scoreTextYOrigin);
+        ChangeScene(new TitleScene());
     }
 
     protected override void LoadContent()
