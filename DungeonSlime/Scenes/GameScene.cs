@@ -37,7 +37,7 @@ public class GameScene : Scene
     private Rectangle _roomBounds;
 
     // The sound effect to play when the bat bounces off the edge of the screen.
-    private SoundEffect _bounceSoundEffect;
+    // private SoundEffect _bounceSoundEffect;
 
     // The sound effect to play when the slime eats a bat.
     private SoundEffect _collectSoundEffect;
@@ -110,10 +110,10 @@ public class GameScene : Scene
         _tilemap.Scale = new Vector2(4.0f, 4.0f);
 
         // Load the bounce sound effect.
-        _bounceSoundEffect = Content.Load<SoundEffect>("audio/bounce");
+        // _bounceSoundEffect = Content.Load<SoundEffect>("audio/bounce");
 
         // Load the collect sound effect.
-        _collectSoundEffect = Content.Load<SoundEffect>("audio/collect");
+        // _collectSoundEffect = Content.Load<SoundEffect>("audio/collect");
 
         // Load the font.
         _font = Core.Content.Load<SpriteFont>("fonts/04B_30");
