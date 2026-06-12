@@ -35,6 +35,10 @@ public class TitleScene : Scene
 
     // The origin to set for the press enter text when drawing it.
     private Vector2 _pressEnterOrigin;
+    private Texture2D _backgroundPattern;
+    private Rectangle _backgroundDestination;
+    private Vector2 _backgroundOffset;
+    private float _scrollSpeed = 50.0f;
 
     public override void Initialize()
     {
@@ -53,12 +57,16 @@ public class TitleScene : Scene
         size = _font.MeasureString(PRESS_ENTER_TEXT);
         _pressEnterPos = new Vector2(640, 620);
         _pressEnterOrigin = size * 0.5f;
+
+        _backgroundOffset = Vector2.Zero;
+        _backgroundDestination = Core.GraphicsDevice.PresentationParameters.Bounds;
     }
 
     public override void LoadContent()
     {
         _font = Core.Content.Load<SpriteFont>("fonts/04B_30");
         _font5x = Content.Load<SpriteFont>("fonts/04B_30_5x");
+        _backgroundPattern = Content.Load<Texture2D>("images/background-pattern");
     }
 
     public override void Update(GameTime gameTime)
@@ -68,11 +76,22 @@ public class TitleScene : Scene
         {
             Core.ChangeScene(new GameScene());
         }
+
+        float offset = _scrollSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        _backgroundOffset.X -= offset;
+        _backgroundOffset.Y -= offset;
+        _backgroundOffset.X %= _backgroundPattern.Width;
+        _backgroundOffset.Y %= _backgroundPattern.Height;
     }
 
     public override void Draw(GameTime gameTime)
     {
         Core.GraphicsDevice.Clear(new Color(32, 40, 78, 255));
+
+        Core.SpriteBatch.Begin(samplerState: SamplerState.PointWrap);
+        Core.SpriteBatch.Draw(_backgroundPattern, _backgroundDestination, new(_backgroundOffset.ToPoint(), _backgroundDestination.Size), Color.White * 0.5f);
+        Core.SpriteBatch.End();
+        
         Core.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         Color dropShadowColor = Color.Black * 0.5f;
         Core.SpriteBatch.DrawString(_font5x, DUNGEON_TEXT, _dungeonTextPos + new Vector2(10, 10), dropShadowColor, 0.0f, _dungeonTextOrigin, 1.0f, SpriteEffects.None, 1.0f);
