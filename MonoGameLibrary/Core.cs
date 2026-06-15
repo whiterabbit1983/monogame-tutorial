@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary.Input;
 using MonoGameLibrary.Scenes;
+using MonoGameLibrary.Audio;
 
 namespace MonoGameLibrary;
 
@@ -20,6 +21,7 @@ public class Core : Game
     public static bool ExitOnEscape { get; set; }
     private static Scene _activeScene;
     private static Scene _nextScene;
+    public static AudioController Audio { get; private set; }
 
     public Core(string title, int width, int height, bool fullScreen)
     {
@@ -53,10 +55,19 @@ public class Core : Game
         GraphicsDevice = base.GraphicsDevice;
         SpriteBatch = new SpriteBatch(GraphicsDevice);
         Input = new();
+        Audio = new();
+    }
+    protected override void UnloadContent()
+    {
+        // Dispose of the audio controller.
+        Audio.Dispose();
+
+        base.UnloadContent();
     }
 
     protected override void Update(GameTime gameTime)
     {
+        Audio.Update();
         // Update the input manager.
         Input.Update(gameTime);
 
