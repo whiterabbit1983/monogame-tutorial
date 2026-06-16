@@ -71,10 +71,10 @@ public class Core : Game
         // Update the input manager.
         Input.Update(gameTime);
 
-        if (ExitOnEscape && Input.Keyboard.IsKeyDown(Keys.Escape))
-        {
-            Exit();
-        }
+        // if (ExitOnEscape && Input.Keyboard.IsKeyDown(Keys.Escape))
+        // {
+        //     Exit();
+        // }
 
         if (_nextScene != null)
         {
