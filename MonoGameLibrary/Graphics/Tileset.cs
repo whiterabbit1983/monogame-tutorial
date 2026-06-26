@@ -25,8 +25,8 @@ public class Tileset
             int y = i / Columns * tileHeight;
             _tiles[i] = new(
                 textureRegion.Texture,
-                textureRegion.SoureceRectangle.X + x,
-                textureRegion.SoureceRectangle.Y + y,
+                textureRegion.SourceRectangle.X + x,
+                textureRegion.SourceRectangle.Y + y,
                 tileWidth,
                 tileHeight
             );

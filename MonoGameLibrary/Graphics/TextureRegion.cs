@@ -6,9 +6,15 @@ namespace MonoGameLibrary.Graphics;
 public class TextureRegion
 {
     public Texture2D Texture { get; set; }
-    public Rectangle SoureceRectangle { get; set; }
-    public int Width => SoureceRectangle.Width;
-    public int Height => SoureceRectangle.Height;
+    public Rectangle SourceRectangle { get; set; }
+    public int Width => SourceRectangle.Width;
+    public int Height => SourceRectangle.Height;
+
+    public float TopTextureCoordinate => SourceRectangle.Top / (float)Texture.Height;
+    public float BottomTextureCoordinate => SourceRectangle.Bottom / (float)Texture.Height;
+    public float LeftTextureCoordinate => SourceRectangle.Left / (float)Texture.Width;
+    public float RightTextureCoordinate => SourceRectangle.Right / (float)Texture.Width;
+
 
     public TextureRegion()
     {
@@ -18,7 +24,7 @@ public class TextureRegion
     public TextureRegion(Texture2D texture, int x, int y, int width, int height)
     {
         Texture = texture;
-        SoureceRectangle = new Rectangle(x, y, width, height);
+        SourceRectangle = new Rectangle(x, y, width, height);
     }
 
     public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color)
@@ -45,7 +51,7 @@ public class TextureRegion
         spriteBatch.Draw(
             Texture,
             position,
-            SoureceRectangle,
+            SourceRectangle,
             color,
             rotation,
             origin,
