@@ -1,6 +1,8 @@
 using System;
+using DungeonSlime.UI;
 using Gum.DataTypes;
 using Gum.Wireframe;
+using Gum.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -64,7 +66,8 @@ public class GameScene : Scene
 
     // A reference to the resume button UI element so we can focus it
     // when the game is paused.
-    private Button _resumeButton;
+    private AnimatedButton _resumeButton;
+    private TextureAtlas _atlas;
 
     // The UI sound effect to play when a UI event is triggered.
     private SoundEffect _uiSoundEffect;
@@ -111,14 +114,14 @@ public class GameScene : Scene
     public override void LoadContent()
     {
         // Create the texture atlas from the XML configuration file.
-        TextureAtlas atlas = TextureAtlas.FromFile(Core.Content, "images/atlas-definition.xml");
+        _atlas = TextureAtlas.FromFile(Core.Content, "images/atlas-definition.xml");
 
         // Create the slime animated sprite from the atlas.
-        _slime = atlas.CreateAnimatedSprite("slime-animation");
+        _slime = _atlas.CreateAnimatedSprite("slime-animation");
         _slime.Scale = new Vector2(4.0f, 4.0f);
 
         // Create the bat animated sprite from the atlas.
-        _bat = atlas.CreateAnimatedSprite("bat-animation");
+        _bat = _atlas.CreateAnimatedSprite("bat-animation");
         _bat.Scale = new Vector2(4.0f, 4.0f);
 
         // Create the tilemap from the XML configuration file.
@@ -424,19 +427,33 @@ public class GameScene : Scene
         _pausePanel.IsVisible = false;
         _pausePanel.AddToRoot();
 
-        var background = new ColoredRectangleRuntime();
+        TextureRegion backgroundRegion = _atlas.GetRegion("panel-background");
+
+        NineSliceRuntime background = new();
         background.Dock(Dock.Fill);
-        background.Color = Color.DarkBlue;
+        background.Texture = backgroundRegion.Texture;
+        background.TextureAddress = TextureAddress.Custom;
+        background.TextureHeight = backgroundRegion.Height;
+        background.TextureLeft = backgroundRegion.SourceRectangle.Left;
+        background.TextureTop = backgroundRegion.SourceRectangle.Top;
+        background.TextureWidth = backgroundRegion.Width;
         _pausePanel.AddChild(background);
 
-        var textInstance = new TextRuntime();
-        textInstance.Text = "PAUSED";
-        textInstance.X = 10f;
-        textInstance.Y = 10f;
+        var textInstance = new TextRuntime
+        {
+            Text = "PAUSED",
+            X = 10f,
+            Y = 10f,
+            CustomFontFile = @"fonts/04b_30.fnt",
+            UseCustomFont = true,
+            FontScale = 0.5f
+        };
         _pausePanel.AddChild(textInstance);
 
-        _resumeButton = new Button();
-        _resumeButton.Text = "RESUME";
+        _resumeButton = new(_atlas)
+        {
+            Text = "RESUME"
+        };
         _resumeButton.Anchor(Anchor.BottomLeft);
         _resumeButton.X = 9f;
         _resumeButton.Y = -9f;
@@ -444,8 +461,10 @@ public class GameScene : Scene
         _resumeButton.Click += HandleResumeButtonClicked;
         _pausePanel.AddChild(_resumeButton);
 
-        var quitButton = new Button();
-        quitButton.Text = "QUIT";
+        AnimatedButton quitButton = new(_atlas)
+        {
+            Text = "QUIT"
+        };
         quitButton.Anchor(Anchor.BottomRight);
         quitButton.X = -9f;
         quitButton.Y = -9f;
