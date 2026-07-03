@@ -6,12 +6,12 @@ using MonoGameLibrary.Graphics;
 
 namespace DungeonSlime.GameObjects;
 
-public class Bat(AnimatedSprite sprite, SoundEffect bounceSoundEffect)
+public class Bat(AnimatedSprite sprite)
 {
     private const float MOVEMENT_SPEED = 5.0f;
     private Vector2 _velocity;
     private readonly AnimatedSprite _sprite = sprite;
-    private readonly SoundEffect _bounceSoundEffect = bounceSoundEffect;
+    // private readonly SoundEffect _bounceSoundEffect = bounceSoundEffect;
 
     public Vector2 Position { get; set;}
 
@@ -41,7 +41,7 @@ public class Bat(AnimatedSprite sprite, SoundEffect bounceSoundEffect)
         Position = newPosition;
         normal.Normalize();
         _velocity = Vector2.Reflect(_velocity, normal);
-        Core.Audio.PlaySoundEffect(_bounceSoundEffect);
+        // Core.Audio.PlaySoundEffect(_bounceSoundEffect);
     }
 
     public Circle GetBounds()
